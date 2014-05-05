@@ -2,11 +2,11 @@
 
 class HmacSignerTest extends PHPUnit_Framework_TestCase
 {
-    public function testCalcApiSig()
+    public function testCalcApiSig_defaultHashAlgo()
     {
         // Arrange
-        $apiKey = '1f327a26d1b7f541d912ab0b297b049b';
-        $sharedSecret = 'cb9ecf1eb29889c1ddf243a93fbe8073bb357e60';
+        $apiKey = 'a made up api key';
+        $sharedSecret = 'a made up shared secret';
         $time = 1399311914;
 
         // Act
@@ -18,8 +18,69 @@ class HmacSignerTest extends PHPUnit_Framework_TestCase
 
         // Assert
         $this->assertEquals(
-            'cdd38b0a500e345be7a64a2300e0afc5f2d99680',
+            '3e75a94a5bb87f5d3f1c89cb45e0224bfe4d0283',
             $apiSig
         );
+    }
+    
+    public function testCalcApiSig_defaultHashAlgo_invalid()
+    {
+        // Arrange
+        $apiKey = 'a made up api key';
+        $sharedSecret = 'a DIFFERENT made up shared secret';
+        $time = 1399311914;
+
+        // Act
+        $apiSig = \CalcApiSig\HmacSigner::CalcApiSig(
+            $apiKey,
+            $sharedSecret,
+            $time
+        );
+
+        // Assert
+        $this->assertNotEquals(
+            '3e75a94a5bb87f5d3f1c89cb45e0224bfe4d0283',
+            $apiSig
+        );
+    }
+
+    public function testCalcApiSig_md5HashAlgo()
+    {
+        // Arrange
+        $apiKey = 'a made up api key';
+        $sharedSecret = 'a made up shared secret';
+        $time = 1399311914;
+        $algorithm = 'md5';
+
+        // Act
+        $apiSig = \CalcApiSig\HmacSigner::CalcApiSig(
+            $apiKey,
+            $sharedSecret,
+            $time,
+            $algorithm
+        );
+
+        // Assert
+        $this->assertEquals('40a675daed03b8559393a8b1e136349d', $apiSig);
+    }
+
+    public function testCalcApiSig_unknownHashAlgo()
+    {
+        // Arrange
+        $apiKey = 'a made up api key';
+        $sharedSecret = 'a made up shared secret';
+        $time = 1399311914;
+        $algorithm = 'anUnknownHashingAlgorithmName';
+
+        // Act
+        $apiSig = @\CalcApiSig\HmacSigner::CalcApiSig(
+            $apiKey,
+            $sharedSecret,
+            $time,
+            $algorithm
+        );
+
+        // Assert
+        $this->assertNull($apiSig);
     }
 }
