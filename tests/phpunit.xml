@@ -1,0 +1,25 @@
+<phpunit bootstrap="bootstrap.php"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="true">
+
+  <testsuites>
+    <testsuite name="unit">
+      <directory>./unit</directory>
+    </testsuite>
+  </testsuites>
+  <!--
+  <filter>
+      <blacklist>
+          <directory suffix=".php">../vendor</directory>
+      </blacklist>
+  </filter> 
+  <logging>
+      <log type="coverage-text"
+           target="./coverage.txt"
+           showUncoveredFiles="false" />
+  </logging>
+  -->
+</phpunit>
